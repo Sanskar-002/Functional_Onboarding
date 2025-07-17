@@ -38,7 +38,7 @@ const server = http.createServer((req, res) => {
     res.end('Welcome to my Node.js server!');
   } else if (url === '/about') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('I am a Node.js enthusiast building servers for fun and learning!');
+    res.end('Hii this is my first Node.js server');
   } else if (url === '/contact') {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(`
