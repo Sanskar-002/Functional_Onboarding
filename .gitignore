@@ -1,0 +1,17 @@
+# Ignore node modules
+node_modules/
+
+# Ignore logs
+*.log
+
+# Ignore environment variables
+.env
+
+# Ignore Mac system file
+.DS_Store
+
+# Ignore VSCode config
+.vscode/
+
+# Ignore all .zip files
+*.zip
