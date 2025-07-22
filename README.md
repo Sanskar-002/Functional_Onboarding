@@ -1,5 +1,5 @@
 # Functional Onboarding 
-Assignments:- \n
-Assignment 1:- Simple http-server \n
-Assignment 2:-CLI to-do application \n
-Assignment 3:- Nightwatch Automation \n
+Assignments:- <br />
+Assignment 1:- Simple http-server <br />
+Assignment 2:-CLI to-do application <br />
+Assignment 3:- Nightwatch Automation <br />
