@@ -5,3 +5,4 @@ Feature: Validate Ultimate QA page
     Then the page title should match "Automation Practice - Ultimate QA"
     Then all links should return valid status codes
     Then I should see no JavaScript console errors
+//git hub

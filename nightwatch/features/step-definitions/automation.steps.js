@@ -28,3 +28,4 @@ Then('I should see no JavaScript console errors', async function () {
   severeErrors.forEach(err => console.log(`🚨 JS Error: ${err.message}`));
   assert.strictEqual(severeErrors.length, 0, 'JavaScript console errors detected');
 });
+//git hub
