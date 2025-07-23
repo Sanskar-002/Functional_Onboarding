@@ -10,8 +10,7 @@ node_modules/
 # Ignore Mac system file
 .DS_Store
 
-# Ignore VSCode config
-.vscode/
+
 
 # Ignore all .zip files
 *.zip
