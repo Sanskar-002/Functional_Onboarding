@@ -1,6 +1,7 @@
-Feature: Title is Bing
+Feature: Validate Ultimate QA page
 
-    Scenario: Check if title is 
-        Given I open Bing search page "https://ultimateqa.com/automation"
-        Then the title is "Automation Practice - Ultimate QA"
-
+  Scenario: Validate title, link status, and console logs
+    Given I navigate to the "https://ultimateqa.com/automation"
+    Then the page title should match "Automation Practice - Ultimate QA"
+    Then all links should return valid status codes
+    Then I should see no JavaScript console errors

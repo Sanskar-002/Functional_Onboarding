@@ -1,16 +1,14 @@
-const { BeforeAll, AfterAll, setDefaultTimeout } = require("cucumber");
-const { startWebDriver, createSession, closeSession, stopWebDriver } = require("nightwatch-api");
+require('dotenv').config();
+const { setDefaultTimeout, BeforeAll, AfterAll } = require('@cucumber/cucumber');
+const { createSession, closeSession } = require('nightwatch-api');
 
-setDefaultTimeout(10000); //1 minute default timeout 
+setDefaultTimeout(60 * 1000);
 
-BeforeAll( async() => {
-    await startWebDriver();
-    // await startWebDriver({
-    await createSession();
-    });
+BeforeAll(async () => {
+  await createSession({ env: 'browserstack' }); // 🔥 Force browserstack env
+});
 
-AfterAll( async() => {
-    await closeSession();
-    await stopWebDriver();
-    // await closeWebDriver({
-    });
+AfterAll(async () => {
+  await closeSession();
+});
+

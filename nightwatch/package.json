@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js --require cucumber.conf.js --require step-definitions --format node_modules/cucumber-pretty"
+    "test": "cucumber-js --require cucumber.conf.js --require features/step-definitions --format progress"
   },
   "keywords": [],
   "author": "Sanskar Deoghare",
@@ -11,8 +11,10 @@
   "description": "",
   "dependencies": {
     "chromedriver": "^137.0.0",
-    "cucumber": "^6.0.7",
-    "cucumber-pretty": "^6.0.1",
-    "nightwatch-api": "^3.0.2"
+    "nightwatch-api": "^3.0.2",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.3.0"
   }
 }

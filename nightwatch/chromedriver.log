@@ -1,5 +1,4 @@
-Starting ChromeDriver 137.0.7151.55 (254bc711794d7ad269495f3d419a209935b78cad-refs/branch-heads/7151@{#1757}) on port 4444
+Starting ChromeDriver 137.0.7151.55 (254bc711794d7ad269495f3d419a209935b78cad-refs/branch-heads/7151@{#1757}) on port 4443
 Only local connections are allowed.
 Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
-ChromeDriver was started successfully on port 4444.
-[1753097839.842][WARNING]: This version of ChromeDriver has not been tested with Chrome version 138.
+ChromeDriver was started successfully on port 4443.
