@@ -1,15 +1,15 @@
-require('dotenv').config();
-const { setDefaultTimeout, BeforeAll, AfterAll } = require('@cucumber/cucumber');
-const { createSession, closeSession } = require('nightwatch-api');
+const { setDefaultTimeout, Before, After, AfterAll } = require('@cucumber/cucumber');
+const { createSession, closeSession, client } = require('nightwatch-api');
 
+// Set the default timeout for asynchronous steps
 setDefaultTimeout(60 * 1000);
 
-BeforeAll(async () => {
-  await createSession({ env: 'browserstack' }); // 🔥 Force browserstack env
+// Use Before hook to create the browser session
+Before(async function() {
+  await createSession();
 });
 
-AfterAll(async () => {
+// Use After hook to close the browser session
+After(async function() {
   await closeSession();
 });
-
-//git hub

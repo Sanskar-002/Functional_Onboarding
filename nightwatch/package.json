@@ -10,12 +10,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "chromedriver": "^137.0.0",
+    "chromedriver": "^126.0.0",
     "nightwatch-api": "^3.0.2",
     "node-fetch": "^2.7.0"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "^11.3.0"
+    "@cucumber/cucumber": "^7.3.2"
   }
 }
-//git hub

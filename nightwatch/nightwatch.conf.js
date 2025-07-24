@@ -1,17 +1,19 @@
 require('dotenv').config();
-const chromedriver = require('chromedriver');
 
 module.exports = {
   src_folders: [],
-  page_objects_path: [],
+  // ✅ ADDED: This line is essential for Nightwatch to find your page object files.
+  page_objects_path: ['pages'], 
   test_settings: {
     default: {
       webdriver: {
-        start_process: true,
-        server_path: chromedriver.path,
-        port: 9515
+        start_process: false,
+        host: 'hub-cloud.browserstack.com',
+        port: 443
       },
       desiredCapabilities: {
+        'browserstack.user': process.env.BROWSERSTACK_USERNAME,
+        'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY,
         browserName: 'chrome'
       }
     },
@@ -24,11 +26,8 @@ module.exports = {
       desiredCapabilities: {
         'browserstack.user': process.env.BROWSERSTACK_USERNAME,
         'browserstack.key': process.env.BROWSERSTACK_ACCESS_KEY,
-        browserName: 'chrome',
-        'browserstack.debug': true
+        browserName: 'chrome'
       }
     }
   }
 };
-
-//git hub

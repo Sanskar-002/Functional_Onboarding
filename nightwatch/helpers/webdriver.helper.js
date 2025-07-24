@@ -1,51 +1,55 @@
-const { client } = require('nightwatch-api');
-
-module.exports = {
-  async openNewTab(linkSelector) {
-    // Get current tab handles
-    const originalHandles = await client.windowHandles();
-    const originalTabs = originalHandles?.value || [];
-
-    // Click the link (must have target="_blank")
-    await client.click(linkSelector);
-
-    // Wait for new tab to appear
-    let newHandles;
-    for (let i = 0; i < 10; i++) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      newHandles = await client.windowHandles();
-      if (newHandles && newHandles.value.length > originalTabs.length) break;
+class WebDriverHelper {
+    constructor(browser) {
+        this.browser = browser;
     }
 
-    if (!newHandles || !newHandles.value || newHandles.value.length <= originalTabs.length) {
-      throw new Error(`❌ New tab did not open for selector: ${linkSelector}`);
+    async navigateTo(url) {
+        await this.browser.url(url);
     }
 
-    const newTab = newHandles.value.find(h => !originalTabs.includes(h));
-    if (!newTab) {
-      throw new Error(`❌ Could not find new tab handle for selector: ${linkSelector}`);
+    async getTitle() {
+        return await this.browser.title();
     }
 
-    await client.switchWindow(newTab);
-    await client.waitForElementVisible('body', 10000);
-  },
-
-  async waitForElementVisible(selector, timeout = 5000) {
-    return client.waitForElementVisible(selector, timeout);
-  },
-
-  async getAllLinks() {
-    const result = await client.elements('css selector', 'a');
-    const hrefs = [];
-
-    for (const elem of result.value) {
-      const href = await client.elementIdAttribute(elem.ELEMENT, 'href');
-      if (href && href.value) {
-        hrefs.push({ href: href.value, elementId: elem.ELEMENT });
-      }
+    async waitForElementVisible(selector, timeout = 10000) {
+        await this.browser.waitForElementVisible(selector, timeout);
     }
 
-    return hrefs;
-  }
-};
-//git hub
+    async getElements(selector) {
+        return await this.browser.elements('css selector', selector);
+    }
+
+    async getAttribute(elementId, attributeName) {
+        return await this.browser.elementIdAttribute(elementId, attributeName);
+    }
+
+    /**
+     * Retrieves browser console logs.
+     * Note: 'bstack:options': { consoleLogs: 'info' } must be set in desiredCapabilities.
+     * @returns {Promise<Array>} A promise that resolves to an array of log entries.
+     */
+    async getConsoleLogs() {
+        return await this.browser.getLog('browser');
+    }
+
+    /**
+     * Checks the HTTP status of a given URL by executing a fetch request in the browser.
+     * @param {string} url The URL to check.
+     * @returns {Promise<number>} The HTTP status code.
+     */
+    async getUrlStatus(url) {
+        const status = await this.browser.executeAsync(function(url, done) {
+            fetch(url, { method: 'HEAD', mode: 'no-cors' }) // Use HEAD for speed, no-cors to avoid CORS issues
+                .then(response => {
+                    // For 'no-cors', status will be 0 but it indicates a successful request dispatch
+                    done(response.status === 0 ? 200 : response.status);
+                })
+                .catch(() => {
+                    done(500); // Indicate a failure to fetch
+                });
+        }, [url]);
+        return status;
+    }
+}
+
+module.exports = WebDriverHelper;

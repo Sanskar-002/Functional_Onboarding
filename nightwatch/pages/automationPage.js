@@ -1,84 +1,52 @@
-const { client } = require('nightwatch-api');
-const { waitForElementVisible } = require('../helpers/webdriver.helper');
-const fetch = require('node-fetch');
-
-
 module.exports = {
   elements: {
-    allLinks: 'a'
+    // Using a more specific selector from your example to target the 7 links
+    linksToTest: '.et_pb_section_1 a'
   },
+  commands: [{
+    /**
+     * This custom command validates that each link opens in a new tab
+     * and that the new tab's URL matches the link's href.
+     * It uses Nightwatch's internal command queue for stable execution.
+     */
+    validateLinksInNewTabs() {
+      const page = this;
+      const api = this.api; // Use this.api for commands
 
-  async openPage(url) {
-    await client.url(url);
-    await waitForElementVisible('body');
-  },
+      api.elements('css selector', page.elements.linksToTest, (result) => {
+        console.log(`🔗 Found ${result.value.length} link elements to validate...`);
 
-  async getPageTitle() {
-    return new Promise((resolve, reject) => {
-      client.title(result => {
-        if (result.status === 0 && result.value) {
-          console.log('🔍 Page title:', result.value);
-          resolve(result.value);
-        } else {
-          console.error('❌ Failed to get page title:', result);
-          reject(new Error('Could not retrieve page title.'));
-        }
+        // Get the original window handle once
+        api.windowHandle(function(originalWindow) {
+          
+          result.value.forEach((element) => {
+            // Get the href attribute for each link
+            api.elementIdAttribute(element.ELEMENT, 'href', (hrefResult) => {
+              const href = hrefResult.value;
+              if (!href || !href.startsWith('http')) return; // Skip non-http links
+
+              console.log(`\n▶️ Testing link: ${href}`);
+
+              // Use execute to open the link in a new tab
+              api.execute(`window.open("${href}", "_blank");`);
+
+              // Get all window handles and find the new one
+              api.windowHandles((handlesResult) => {
+                const newWindowHandle = handlesResult.value.find(handle => handle !== originalWindow.value);
+
+                // Switch to the new tab, wait for it to load, and assert the URL
+                api.switchWindow(newWindowHandle)
+                  .waitForElementVisible('body', 10000) // Wait for the new page to be ready
+                  .assert.urlEquals(href) // Assert the URL matches the href
+                  .closeWindow() // Close the new tab
+                  .switchWindow(originalWindow.value); // Switch back to the original tab
+              });
+            });
+          });
+        });
       });
-    });
-  },
 
-  async getAllLinks() {
-    return new Promise((resolve, reject) => {
-      client.elements('css selector', 'a', result => {
-        if (result.status === 0 && result.value) {
-          console.log(`🔗 Found ${result.value.length} links`);
-          resolve(result.value);
-        } else {
-          console.error('❌ Failed to retrieve links:', result);
-          reject(new Error('Could not retrieve links'));
-        }
-      });
-    });
-  },
-
-  async getHrefFromElement(elementId) {
-    return new Promise((resolve, reject) => {
-      client.elementIdAttribute(elementId, 'href', result => {
-        if (result.status === 0) {
-          resolve(result.value || null); // Return null if empty
-        } else {
-          resolve(null); // Gracefully skip bad elements
-        }
-      });
-    });
-  },
-
-  async validateLinksStatus() {
-    const links = await this.getAllLinks();
-    const hrefs = [];
-
-    for (const link of links) {
-      const href = await this.getHrefFromElement(link.ELEMENT);
-      if (href && href.startsWith('http')) {
-        hrefs.push(href);
-      }
+      return this; // Return page object for chaining
     }
-
-    console.log(`🌐 Validating ${hrefs.length} external links...`);
-
-    for (const href of hrefs) {
-      try {
-        const response = await fetch(href, { method: 'HEAD', timeout: 10000 });
-        const status = response.status;
-        if (status >= 200 && status < 400) {
-          console.log(`✅ ${href} returned ${status}`);
-        } else {
-          console.warn(`⚠️ ${href} returned status ${status}`);
-        }
-      } catch (error) {
-        console.error(`❌ Error fetching ${href}: ${error.message}`);
-      }
-    }
-  }
+  }]
 };
-//git hub
